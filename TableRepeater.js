@@ -15,6 +15,7 @@
             onAdd: null,
             columnsResizable: false,
             fileConfig: null,
+            onInvalid:null
         }, options);
 
         var updateSettings = function (newSettings) {
@@ -207,7 +208,9 @@
                     if (config.allowedExtensions) {
                         const fileExtension = file.name.split('.').pop().toLowerCase();
                         if (!config.allowedExtensions.includes(fileExtension)) {
-                            alert(`File type not allowed. Allowed types: ${config.allowedExtensions.join(', ')}`);
+                                if (typeof settings.onInvalid === 'function') {
+                                        settings.onInvalid(`File type not allowed. Allowed types: ${config.allowedExtensions.join(', ')}`);
+                                    }
                             $fileInput.val(''); // Clear input
                             return;
                         }
@@ -215,7 +218,9 @@
 
                     // Validate size if maxSize is defined
                     if (config.maxSize && file.size > config.maxSize) {
-                        alert(`File size exceeds the limit of ${config.maxSize / (1024 * 1024)}MB`);
+                          if (typeof settings.onInvalid === 'function') {
+                                  settings.onInvalid(`File size exceeds the limit of ${config.maxSize / (1024 * 1024)}MB`);
+                              }
                         $fileInput.val(''); // Clear input
                         return;
                     }
